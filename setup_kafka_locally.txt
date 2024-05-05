@@ -1,0 +1,19 @@
+
+
+
+docker pull wurstmeister/kafka
+docker run -d --name zookeeper  -p 2181:2181 zookeeper:latest
+<note the container id>
+
+
+docker network ls
+<note the local network id>
+docker inspect <network_id>
+<find the ip address of zookeeper and use it for KAFKA_ZOOKEEPER_CONNECT>
+docker run -d --name kafka -p 9092:9092 --link zookeeper:zookeeper -e KAFKA_ZOOKEEPER_CONNECT=172.17.0.2/16:2181 -e KAFKA_LISTENERS=PLAINTEXT://127.0.0.1:9092 wurstmeister/kafka:latest
+<note the container id>
+
+
+docker pull hlebalbau/kafka-manager:stable
+docker run -d --name cmak -p 9000:9000 --link kafka:kafka -e ZK_HOSTS=172.17.0.2/16:2181 hlebalbau/kafka-manager:stable
+<note the container id>
